@@ -15,6 +15,8 @@ import { WelcomeComponent } from './home/welcome.component';
 import { ProductData } from './products/product-data';
 /* Feature Modules */
 import { UserModule } from './user/user.module';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   imports: [
@@ -23,7 +25,12 @@ import { UserModule } from './user/user.module';
     HttpClientInMemoryWebApiModule.forRoot(ProductData),
     UserModule,
     AppRoutingModule,
-    StoreModule.forRoot({})
+    StoreModule.forRoot({}),
+    StoreDevtoolsModule.instrument({
+      name: 'APM Devtools',
+      maxAge: 25,
+      logOnly: environment.production
+    })
   ],
   declarations: [
     AppComponent,
