@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from './auth.service';
 import { Store, select } from '@ngrx/store';
 
+import * as fromUsers from './state/user.reducer';
+
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -15,17 +17,15 @@ export class LoginComponent implements OnInit {
 
   maskUserName: boolean;
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private router: Router,
-    private store: Store<any>) {
+    private store: Store<fromUsers.State>) {
   }
 
   ngOnInit(): void {
-    this.store.pipe(select('users')).subscribe((users) => {
-      if (users) {
-        this.maskUserName = users.maskUserName;
-      }
-    });
+    this.store.pipe(select(fromUsers.getMaskUserName))
+      .subscribe((maskUserName) => this.maskUserName = maskUserName);
   }
 
   cancel(): void {
