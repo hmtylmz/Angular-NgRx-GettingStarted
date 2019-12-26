@@ -30,7 +30,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private store: Store<fromProducts.State>) { }
 
   ngOnInit(): void {
-    // TODO: Unsubscribe
     this.store.pipe(select(fromProducts.getCurrentProduct),
       takeWhile(() => this.componentActive)).subscribe(
         currentProduct => this.selectedProduct = currentProduct
@@ -41,7 +40,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(new productActions.Load());
 
-    // TODO: Unsubscribe
     this.store.pipe(select(fromProducts.getShowProductCode),
       takeWhile(() => this.componentActive))
       .subscribe((showProductCode) => this.displayCode = showProductCode);
