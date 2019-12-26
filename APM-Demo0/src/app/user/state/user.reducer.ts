@@ -5,7 +5,7 @@ import { UserActions, UserActionTypes } from './user.actions';
 
 export interface State extends fromRoot.State {
 
-};
+}
 
 export interface UserState {
   maskUserName: boolean;
