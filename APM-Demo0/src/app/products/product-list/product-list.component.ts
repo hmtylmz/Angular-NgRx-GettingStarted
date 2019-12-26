@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
 import * as fromProducts from '../state/product.reducer';
 import * as productActions from '../state/product.actions';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'pm-product-list',
@@ -14,38 +15,39 @@ import * as productActions from '../state/product.actions';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit, OnDestroy {
+  componentActive = true;
   pageTitle = 'Products';
   errorMessage: string;
 
   displayCode: boolean;
 
-  products: Product[];
+  products$: Observable<Product[]>;
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
 
   constructor(
-    private store: Store<fromProducts.State>,
-    private productService: ProductService) { }
+    private store: Store<fromProducts.State>) { }
 
   ngOnInit(): void {
     // TODO: Unsubscribe
-    this.store.pipe(select(fromProducts.getCurrentProduct)).subscribe(
-      currentProduct => this.selectedProduct = currentProduct
-    );
+    this.store.pipe(select(fromProducts.getCurrentProduct),
+      takeWhile(() => this.componentActive)).subscribe(
+        currentProduct => this.selectedProduct = currentProduct
+      );
 
-    this.store.pipe(select(fromProducts.getProducts)).subscribe(
-      products => this.products = products
-    );
+    this.products$ = this.store.pipe(select(fromProducts.getProducts));
 
     this.store.dispatch(new productActions.Load());
 
     // TODO: Unsubscribe
-    this.store.pipe(select(fromProducts.getShowProductCode))
+    this.store.pipe(select(fromProducts.getShowProductCode),
+      takeWhile(() => this.componentActive))
       .subscribe((showProductCode) => this.displayCode = showProductCode);
   }
 
   ngOnDestroy(): void {
+    this.componentActive = false;
   }
 
   checkChanged(value: boolean): void {
