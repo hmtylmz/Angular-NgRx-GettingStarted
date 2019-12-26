@@ -17,7 +17,6 @@ import { takeWhile } from 'rxjs/operators';
 export class ProductListComponent implements OnInit, OnDestroy {
   componentActive = true;
   pageTitle = 'Products';
-  errorMessage: string;
 
   displayCode: boolean;
 
@@ -25,6 +24,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
+  errorMessage$: Observable<string>;
 
   constructor(
     private store: Store<fromProducts.State>) { }
@@ -36,6 +36,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
         currentProduct => this.selectedProduct = currentProduct
       );
 
+    this.errorMessage$ = this.store.pipe(select(fromProducts.getErrorMessage));
     this.products$ = this.store.pipe(select(fromProducts.getProducts));
 
     this.store.dispatch(new productActions.Load());

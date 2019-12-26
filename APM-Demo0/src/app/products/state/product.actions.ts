@@ -42,7 +42,7 @@ export class LoadSuccess implements Action {
 }
 
 export class LoadFail implements Action {
-  readonly type = ProductActionTypes.Load;
+  readonly type = ProductActionTypes.LoadFail;
 
   constructor(public payload: string) { }
 }
