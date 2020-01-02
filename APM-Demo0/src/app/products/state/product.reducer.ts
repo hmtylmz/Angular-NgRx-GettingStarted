@@ -117,6 +117,20 @@ export function reducer(state: ProductState = initialState, action: ProductActio
         errorMessage: action.payload
       };
 
+    case ProductActionTypes.CreateProductSuccess:
+      return {
+        ...state,
+        products: [action.payload, ...state.products],
+        currentProductId: action.payload.id,
+        errorMessage: ''
+      };
+
+    case ProductActionTypes.CreateProductFail:
+      return {
+        ...state,
+        errorMessage: action.payload
+      };
+
     default:
       return state;
   }
