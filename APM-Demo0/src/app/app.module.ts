@@ -18,6 +18,8 @@ import { UserModule } from './user/user.module';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { EffectsModule } from '@ngrx/effects';
+import { EntityDataModule } from '@ngrx/data';
+import { entityConfig } from './entity-metadata';
 
 @NgModule({
   imports: [
@@ -32,7 +34,8 @@ import { EffectsModule } from '@ngrx/effects';
       name: 'APM Devtools',
       maxAge: 25,
       logOnly: environment.production
-    })
+    }),
+    EntityDataModule.forRoot(entityConfig)
   ],
   declarations: [
     AppComponent,
