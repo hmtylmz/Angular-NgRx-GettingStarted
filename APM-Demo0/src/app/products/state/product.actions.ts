@@ -1,104 +1,19 @@
-import { Action } from '@ngrx/store';
-import { Product } from '../product';
+import { createAction, props } from '@ngrx/store';
 
-export enum ProductActionTypes {
-  ToggleProductCode = '[Product] Toggle Product Code',
-  SetCurrentProduct = '[Product] Set Current Product',
-  ClearCurrentProduct = '[Product] Clear Current Product',
-  InitializeCurrentProduct = '[Product] Initialize Current Product',
-  Load = '[Product] Load',
-  LoadSuccess = '[Product] Load Success',
-  LoadFail = '[Product] Load Error',
-  UpdateProduct = '[Product] Update',
-  UpdateProductSuccess = '[Product] Update Success',
-  UpdateProductFail = '[Product] Update Error',
-  CreateProduct = '[Product] Create',
-  CreateProductSuccess = '[Product] Create Success',
-  CreateProductFail = '[Product] Create Error'
-}
+export const ToggleProductCode = createAction(
+  '[Product] Toggle Product Code',
+  props<{ value: boolean }>()
+);
 
-export class ToggleProductCode implements Action {
-  readonly type = ProductActionTypes.ToggleProductCode;
+export const SetCurrentProduct = createAction(
+  '[Product] Set Current Product',
+  props<{ value: number }>()
+);
 
-  constructor(public payload: boolean) { }
-}
+export const ClearCurrentProduct = createAction(
+  '[Product] Clear Current Product'
+);
 
-export class SetCurrentProduct implements Action {
-  readonly type = ProductActionTypes.SetCurrentProduct;
-
-  constructor(public payload: number) { }
-}
-
-export class ClearCurrentProduct implements Action {
-  readonly type = ProductActionTypes.ClearCurrentProduct;
-}
-
-export class InitializeCurrentProduct implements Action {
-  readonly type = ProductActionTypes.InitializeCurrentProduct;
-}
-
-export class Load implements Action {
-  readonly type = ProductActionTypes.Load;
-}
-
-export class LoadSuccess implements Action {
-  readonly type = ProductActionTypes.LoadSuccess;
-
-  constructor(public payload: Product[]) { }
-}
-
-export class LoadFail implements Action {
-  readonly type = ProductActionTypes.LoadFail;
-
-  constructor(public payload: string) { }
-}
-
-export class Update implements Action {
-  readonly type = ProductActionTypes.UpdateProduct;
-
-  constructor(public payload: Product) { }
-}
-
-export class UpdateSuccess implements Action {
-  readonly type = ProductActionTypes.UpdateProductSuccess;
-
-  constructor(public payload: Product) { }
-}
-
-export class UpdateFail implements Action {
-  readonly type = ProductActionTypes.UpdateProductFail;
-
-  constructor(public payload: string) { }
-}
-
-export class Create implements Action {
-  readonly type = ProductActionTypes.CreateProduct;
-
-  constructor(public payload: Product) { }
-}
-
-export class CreateSuccess implements Action {
-  readonly type = ProductActionTypes.CreateProductSuccess;
-
-  constructor(public payload: Product) { }
-}
-
-export class CreateFail implements Action {
-  readonly type = ProductActionTypes.CreateProductFail;
-
-  constructor(public payload: string) { }
-}
-
-export type ProductActions = ToggleProductCode
-  | SetCurrentProduct
-  | ClearCurrentProduct
-  | InitializeCurrentProduct
-  | Load
-  | LoadSuccess
-  | LoadFail
-  | Update
-  | UpdateSuccess
-  | UpdateFail
-  | Create
-  | CreateSuccess
-  | CreateFail;
+export const InitializeCurrentProduct = createAction(
+  '[Product] Initialize Current Product'
+);

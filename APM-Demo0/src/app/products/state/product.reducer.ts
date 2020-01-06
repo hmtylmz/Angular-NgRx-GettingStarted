@@ -1,7 +1,8 @@
-import { Product } from '../product';
+import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
+
 import * as fromRoot from '../../state/app.state';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ProductActions, ProductActionTypes } from './product.actions';
+import { Product } from '../product';
+import * as productActions from '../state/product.actions';
 
 export interface State extends fromRoot.State {
   products: ProductState;
@@ -38,100 +39,22 @@ export const getProducts = createSelector(
   state => state.products
 );
 
-export const getCurrentProduct = createSelector(
-  getProductFeatureState,
-  getCurrentProductId,
-  (state, currentProductId) => {
-    if (currentProductId === 0) {
-      return {
-        id: 0,
-        productName: '',
-        productCode: 'New',
-        description: '',
-        starRating: 0
-      }
-    }
-    return currentProductId ? state.products.find((product) => product.id === currentProductId) : null;
-  }
+export const reducer = createReducer(
+  initialState,
+  on(productActions.ToggleProductCode, (state: ProductState, { value }) => ({
+    ...state,
+    showProductCode: value
+  })),
+  on(productActions.SetCurrentProduct, (state: ProductState, { value }) => ({
+    ...state,
+    currentProductId: value
+  })),
+  on(productActions.ClearCurrentProduct, (state: ProductState) => ({
+    ...state,
+    currentProductId: null
+  })),
+  on(productActions.InitializeCurrentProduct, (state: ProductState) => ({
+    ...state,
+    currentProductId: 0
+  }))
 );
-
-export const getErrorMessage = createSelector(
-  getProductFeatureState,
-  state => state.errorMessage
-);
-
-export function reducer(state: ProductState = initialState, action: ProductActions): ProductState {
-  switch (action.type) {
-
-    case ProductActionTypes.ToggleProductCode:
-      return {
-        ...state,
-        showProductCode: action.payload
-      };
-
-    case ProductActionTypes.SetCurrentProduct:
-      return {
-        ...state,
-        currentProductId: action.payload
-      };
-
-    case ProductActionTypes.ClearCurrentProduct:
-      return {
-        ...state,
-        currentProductId: null
-      };
-
-    case ProductActionTypes.InitializeCurrentProduct:
-      return {
-        ...state,
-        currentProductId: 0
-      };
-
-    case ProductActionTypes.LoadSuccess:
-      return {
-        ...state,
-        products: [...action.payload],
-        errorMessage: ''
-      };
-
-    case ProductActionTypes.LoadFail:
-      return {
-        ...state,
-        products: [],
-        errorMessage: action.payload
-      };
-
-    case ProductActionTypes.UpdateProductSuccess:
-      const updatedProducts = state.products
-        .map((item: Product) => item.id === action.payload.id ? action.payload : item);
-      return {
-        ...state,
-        products: [...updatedProducts],
-        currentProductId: action.payload.id,
-        errorMessage: ''
-      };
-
-    case ProductActionTypes.UpdateProductFail:
-      return {
-        ...state,
-        errorMessage: action.payload
-      };
-
-    case ProductActionTypes.CreateProductSuccess:
-      return {
-        ...state,
-        products: [action.payload, ...state.products],
-        currentProductId: action.payload.id,
-        errorMessage: ''
-      };
-
-    case ProductActionTypes.CreateProductFail:
-      return {
-        ...state,
-        errorMessage: action.payload
-      };
-
-    default:
-      return state;
-  }
-}

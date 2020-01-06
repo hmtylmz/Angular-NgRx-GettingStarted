@@ -42,6 +42,7 @@ export class ProductData implements InMemoryDbService {
                 starRating: 4.6
             }
         ];
-        return { products };
+        const items = { ...products };
+        return { products, items };
     }
 }

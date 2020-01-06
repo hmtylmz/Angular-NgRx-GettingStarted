@@ -1,13 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, of, Subscription } from 'rxjs';
+import { switchMap, takeWhile } from 'rxjs/operators';
 
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Product } from '../product';
-import { ProductService } from '../product.service';
-import { Store, select } from '@ngrx/store';
-import * as fromProducts from '../state/product.reducer';
-import * as productActions from '../state/product.actions';
-import { takeWhile } from 'rxjs/operators';
+import { ItemDataService } from '../state/item-data.service';
+import { ProductStateService } from '../state/product-state.service';
 
 @Component({
   selector: 'pm-product-list',
@@ -27,20 +25,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
   errorMessage$: Observable<string>;
 
   constructor(
-    private store: Store<fromProducts.State>) { }
+    private productStateService: ProductStateService,
+    private itemDataService: ItemDataService) { }
 
   ngOnInit(): void {
-    this.store.pipe(select(fromProducts.getCurrentProduct),
-      takeWhile(() => this.componentActive)).subscribe(
+    this.productStateService.getCurrentProductId().pipe(
+      switchMap((productId) => productId ? this.itemDataService.getByKey(productId) : of({
+        id: 0,
+        productName: '',
+        productCode: 'New',
+        description: '',
+        starRating: 0
+      }))).subscribe(
         currentProduct => this.selectedProduct = currentProduct
       );
 
-    this.errorMessage$ = this.store.pipe(select(fromProducts.getErrorMessage));
-    this.products$ = this.store.pipe(select(fromProducts.getProducts));
+    this.products$ = this.itemDataService.entities$;
+    this.itemDataService.getAll();
 
-    this.store.dispatch(new productActions.Load());
-
-    this.store.pipe(select(fromProducts.getShowProductCode),
+    this.productStateService.getShowProductCode().pipe(
       takeWhile(() => this.componentActive))
       .subscribe((showProductCode) => this.displayCode = showProductCode);
   }
@@ -50,15 +53,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(value: boolean): void {
-    this.store.dispatch(new productActions.ToggleProductCode(value));
+    this.productStateService.toggleProductCode(value);
   }
 
   newProduct(): void {
-    this.store.dispatch(new productActions.InitializeCurrentProduct());
+    this.productStateService.initializeCurrentProduct();
   }
 
   productSelected(product: Product): void {
-    this.store.dispatch(new productActions.SetCurrentProduct(product.id));
+    this.productStateService.setCurrentProduct(product.id);
   }
 
 }
