@@ -1,28 +1,15 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 
-import * as fromRoot from '../../state/app.state';
-import { Product } from '../product';
-import * as productActions from '../state/product.actions';
+import * as productState from './';
 
-export interface State extends fromRoot.State {
-  products: ProductState;
-}
-
-export interface ProductState {
-  showProductCode: boolean;
-  currentProductId: number | null;
-  products: Product[];
-  errorMessage: string;
-}
-
-const initialState: ProductState = {
+const initialState: productState.ProductState = {
   showProductCode: true,
   currentProductId: null,
   products: [],
   errorMessage: ''
 };
 
-const getProductFeatureState = createFeatureSelector<ProductState>('products');
+const getProductFeatureState = createFeatureSelector<productState.ProductState>('products');
 
 export const getShowProductCode = createSelector(
   getProductFeatureState,
@@ -41,19 +28,19 @@ export const getProducts = createSelector(
 
 export const reducer = createReducer(
   initialState,
-  on(productActions.ToggleProductCode, (state: ProductState, { value }) => ({
+  on(productState.ToggleProductCode, (state: productState.ProductState, { value }) => ({
     ...state,
     showProductCode: value
   })),
-  on(productActions.SetCurrentProduct, (state: ProductState, { value }) => ({
+  on(productState.SetCurrentProduct, (state: productState.ProductState, { value }) => ({
     ...state,
     currentProductId: value
   })),
-  on(productActions.ClearCurrentProduct, (state: ProductState) => ({
+  on(productState.ClearCurrentProduct, (state: productState.ProductState) => ({
     ...state,
     currentProductId: null
   })),
-  on(productActions.InitializeCurrentProduct, (state: ProductState) => ({
+  on(productState.InitializeCurrentProduct, (state: productState.ProductState) => ({
     ...state,
     currentProductId: 0
   }))

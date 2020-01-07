@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 
 import { Product } from '../product';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ItemDataService extends EntityCollectionServiceBase<Product> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);

@@ -3,37 +3,36 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
-import * as productActions from '../state/product.actions';
-import * as fromProducts from '../state/product.reducer';
+import * as productState from './';
 
 @Injectable()
 export class ProductStateService {
 
-  constructor(private store: Store<fromProducts.State>) {
+  constructor(private store: Store<productState.State>) {
 
   }
 
   getCurrentProductId(): Observable<number> {
-    return this.store.pipe(select(fromProducts.getCurrentProductId));
+    return this.store.pipe(select(productState.getCurrentProductId));
   }
 
   getShowProductCode(): Observable<boolean> {
-    return this.store.pipe(select(fromProducts.getShowProductCode));
+    return this.store.pipe(select(productState.getShowProductCode));
   }
 
   toggleProductCode(value: boolean): void {
-    this.store.dispatch(productActions.ToggleProductCode({ value }));
+    this.store.dispatch(productState.ToggleProductCode({ value }));
   }
 
   setCurrentProduct(value: number): void {
-    this.store.dispatch(productActions.SetCurrentProduct({ value }));
+    this.store.dispatch(productState.SetCurrentProduct({ value }));
   }
 
   clearProductCode(): void {
-    this.store.dispatch(productActions.ClearCurrentProduct());
+    this.store.dispatch(productState.ClearCurrentProduct());
   }
 
   initializeCurrentProduct(): void {
-    this.store.dispatch(productActions.InitializeCurrentProduct());
+    this.store.dispatch(productState.InitializeCurrentProduct());
   }
 }
